@@ -1,0 +1,360 @@
+<!--
+  This is the popup  HTML file. It will appear whenever the user
+  presses the extension button.  It just a plain old web page!
+  But it can communicate with the background and content scripts
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Derived Scrolling</title>
+    <script src="libraries/p5.js" type="text/javascript"></script>
+    <script src="libraries/p5.dom.js" type="text/javascript"></script>
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="popup.js" type="text/javascript"></script>
+    <style>
+        body {
+            width: 350px;
+            background-color:#ddd;
+        }
+
+        p {
+            line-height: 40px;
+        }
+
+        h1 {
+            font-size: 33px;
+            margin: 25px 0px;
+            text-align: center;
+            color: #000;
+            font-family: monospace;
+            text-transform: uppercase;
+        }
+
+        h4 {
+            margin: 5px 0px;
+        }
+
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 41px;
+            height: 23px;
+            float: right;
+        }
+
+        .big {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            float: right;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #bbb;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider.big:before {
+            position: absolute;
+            content: "";
+            height: 27px;
+            width: 27px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #66aa66;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #66aa66;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(18px);
+            -ms-transform: translateX(18px);
+            transform: translateX(18px);
+        }
+
+        input:checked+.slider.big:before {
+            -webkit-transform: translateX(27px);
+            -ms-transform: translateX(27px);
+            transform: translateX(27px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 22px;
+        }
+
+        .slider.big.round {
+            border-radius: 33px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* Style the button that is used to open and close the collapsible content */
+        input[type='checkbox'] {
+            display: none;
+        }
+
+        .wrap-collabsible {
+            margin: 5px 0;
+        }
+
+        .lbl-toggle {
+            display: block;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 1rem;
+            color: #fff;
+            background: #000;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.25s ease-out;
+        }
+
+        .lbl-toggle:hover {
+            color: #FFF;
+        }
+
+        .lbl-toggle::before {
+            content: ' ';
+            display: inline-block;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 5px solid currentColor;
+            vertical-align: middle;
+            margin-right: .7rem;
+            transform: translateY(-2px);
+            transition: transform .2s ease-out;
+        }
+
+        .toggle:checked+.lbl-toggle::before {
+            transform: rotate(90deg) translateX(-3px);
+        }
+
+        .collapsible-content {
+            max-height: 0px;
+            overflow: hidden;
+            transition: max-height .25s ease-in-out;
+        }
+
+        .toggle:checked+.lbl-toggle+.collapsible-content {
+            max-height: 350px;
+        }
+
+        .toggle:checked+.lbl-toggle {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .collapsible-content .content-inner {
+            background: rgba(0, 0, 0, .2);
+            border-bottom: 1px solid rgba(0, 0, 0, .45);
+            border-bottom-left-radius: 7px;
+            border-bottom-right-radius: 7px;
+            padding: .5rem 1rem;
+        }
+
+        .collapsible-content p {
+            margin-bottom: 0;
+            line-height: 1.8em;
+        }
+        
+        
+        
+        .wrap-collabsible2 {
+            margin: 5px 0;
+        }
+
+        .lbl-toggle2 {
+            display: block;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 1rem;
+            color: #fff;
+            background: #000;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.25s ease-out;
+        }
+
+        .lbl-toggle2:hover {
+            color: #FFF;
+        }
+
+        .lbl-toggle2::before {
+            content: ' ';
+            display: inline-block;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 5px solid currentColor;
+            vertical-align: middle;
+            margin-right: .7rem;
+            transform: translateY(-2px);
+            transition: transform .2s ease-out;
+        }
+
+        .toggle2:checked+.lbl-toggle2::before {
+            transform: rotate(90deg) translateX(-3px);
+        }
+
+        .collapsible-content2 {
+            max-height: 0px;
+            overflow: hidden;
+            transition: max-height .25s ease-in-out;
+        }
+
+        .toggle2:checked+.lbl-toggle2+.collapsible-content2 {
+            max-height: 350px;
+        }
+
+        .toggle2:checked+.lbl-toggle2 {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .collapsible-content2 .content-inner2 {
+            background: rgba(0, 0, 0, .2);
+            border-bottom: 1px solid rgba(0, 0, 0, .45);
+            border-bottom-left-radius: 7px;
+            border-bottom-right-radius: 7px;
+            padding: .5rem 1rem;
+        }
+
+        .collapsible-content2 p {
+            margin-bottom: 0;
+            line-height: 1.8em;
+        }
+        
+        
+        
+        
+
+        .linkbutton {
+            display: block;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 28px;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 1rem;
+            color: #fff;
+            background: #000;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.25s ease-out;
+        }
+
+        .ControlsPanel {
+            display: block;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            padding: 1px 15px;
+            color: #fff;
+            background: #000;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.25s ease-out;
+        }
+        .content-inner2 input{
+            float:right;
+            width:100px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Profiling Pollution</h1>
+    <div class="ControlsPanel">
+        <p>
+            LIKE STUFF: <label class="switch">
+                <input id="likeswitch" type="checkbox" value="checked">
+                <span class="slider round"></span>
+            </label><br />
+            SCREENSHOTS: <label class="switch">
+                <input id="screenswitch" type="checkbox" value="checked">
+                <span class="slider round"></span>
+            </label><br />
+            <span style="font-size:28px;font-weight:bold;">Start Scrolling</span><label class="switch big">
+                <input id="startswitch" type="checkbox" value="unchecked">
+                <span class="slider big round"></span>
+            </label>
+        </p>
+    </div>
+
+    <div class="wrap-collabsible"> <input id="collapsible3" class="toggle" type="checkbox"> <label for="collapsible3" class="lbl-toggle" tabindex="0">What is this?</label>
+        <div class="collapsible-content">
+            <div class="content-inner">
+                <p> Facebook profiling pollution is an extension that scrolls and likes in your facebook feed randomly. It attempts to confuse facebook profiling algorithms. If the screenshotting is enabled it captures liked feed posts, in order to make a collage of them on the derived scrolling website. <br>Random walks are the best remedy to tunnelvision.</p>
+            </div>
+        </div>
+    </div>
+    <div class="wrap-collabsible2"> <input id="collapsible32" class="toggle2" type="checkbox"> <label for="collapsible32" class="lbl-toggle2" tabindex="0">Parameters</label>
+        <div class="collapsible-content2">
+            <div class="content-inner2">
+                <p>
+      Interval Resolution (ms): <input id="intervalresolution" value="30"/><br/>
+      Scroll Speed (px/s): <input id="scrollspeed" type="range" min="100" max="2000" value="800"/><br/>
+                    Like Chance (0-1): <input id="likechance" value="0.9"/><br/>
+                    Waiting/focus time: <input id="waittime" value="0.005"/><br/>                    
+    </p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h4><a href="https://www.derivedscrolling.floorvandenberghe.com" class="linkbutton" target="_blank">Derived scrolling > </a></h4>
+    </div>
+
+
+</body>
+
+</html>
