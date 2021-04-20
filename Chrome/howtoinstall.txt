@@ -1,0 +1,23 @@
+1.
+If it is ZIP’d, extract the contents somewhere
+
+2.
+In Chrome, open "chrome://extensions/"
+
+3.
+Activate "Developer mode" with the top left toggle-switch button
+
+4.
+Click Load unpacked extension…
+
+5.
+Navigate to the extension’s folder and click OK
+
+6.
+In the top of your browser you'll find the extension under the puzzle/extension icon.
+
+7.
+Go to the facebook website, log in and click the icon to access the functions.
+
+8.
+Pat yourself on the back, sweetheart :)
